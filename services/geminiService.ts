@@ -1,42 +1,42 @@
 
-import { GoogleGenAI, Type } from "@google/genai";
+import { StylistRecommendation } from "../types";
 import { PRODUCTS } from "../constants";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+/**
+ * Mocking the Stylist service to allow for static deployment on GitHub Pages
+ * without exposing API keys or requiring a backend.
+ */
+export const getStyleAdvice = async (userInput: string): Promise<StylistRecommendation> => {
+  // Simulate network delay for "AI" feel
+  await new Promise(resolve => setTimeout(resolve, 1200));
 
-export const getStyleAdvice = async (userInput: string) => {
-  const productList = PRODUCTS.map(p => `${p.name} (${p.category})`).join(', ');
+  const input = userInput.toLowerCase();
   
-  const response = await ai.models.generateContent({
-    model: 'gemini-3-flash-preview',
-    contents: userInput,
-    config: {
-      systemInstruction: `
-        You are a world-class fashion stylist for the streetwear brand "not my style" (NMS).
-        The brand vibe is minimalist, edgy, and unconventional.
-        Available products: ${productList}.
-        Help the user find the perfect look based on their occasion, mood, or personality.
-        Be concise, cool, and a bit rebellious in your tone.
-        Return your response in JSON format.
-      `,
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          styleAdvice: {
-            type: Type.STRING,
-            description: "Personalized style advice for the user."
-          },
-          suggestedProducts: {
-            type: Type.ARRAY,
-            items: { type: Type.STRING },
-            description: "List of product names from NMS that match the advice."
-          }
-        },
-        required: ["styleAdvice", "suggestedProducts"]
-      }
-    }
-  });
+  // Deterministic local logic to provide style advice
+  if (input.includes('rave') || input.includes('night') || input.includes('party')) {
+    return {
+      styleAdvice: "For the night-crawlers and beat-seekers. Go dark, go heavy. Contrast the neon with our deep charcoal shades. Layering is your weapon.",
+      suggestedProducts: ["Midnight Rebellion", "Void Concept", "Paradox Oversized Tee"]
+    };
+  }
 
-  return JSON.parse(response.text || '{}');
+  if (input.includes('date') || input.includes('dinner') || input.includes('minimal')) {
+    return {
+      styleAdvice: "Keep it low-key but high-impact. Clean lines and a perfect silhouette speak louder than graphics. Silence is the ultimate luxury.",
+      suggestedProducts: ["Ghost Protocol White", "Ego Death Black"]
+    };
+  }
+
+  if (input.includes('casual') || input.includes('daily') || input.includes('street')) {
+    return {
+      styleAdvice: "The daily uniform for the unconventional. Oversized fits that allow movement and mystery. Not just clothes, but a second skin for the city.",
+      suggestedProducts: ["Paradox Oversized Tee", "Anti-Social Graphic", "Ego Death Black"]
+    };
+  }
+
+  // Default response
+  return {
+    styleAdvice: "The brand is called 'not my style' for a reason. Mix what they say you shouldn't. Boxy fits with minimal accents. Stay unpredictable.",
+    suggestedProducts: ["Void Concept", "Midnight Rebellion", "Ghost Protocol White"]
+  };
 };
