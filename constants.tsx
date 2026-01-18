@@ -7,7 +7,7 @@ export const PRODUCTS: Product[] = [
     name: 'Paradox Oversized Tee',
     price: 450000,
     category: 'Oversized',
-    image: 'https://picsum.photos/seed/nms1/800/1000',
+    image: 'public/images/Gemini_Generated_Image_90tj0890tj0890tj.png',
     description: 'Heavyweight cotton with a boxy silhouette. Defy the norm.'
   },
   {
